@@ -1,9 +1,11 @@
 import React from "react";
 import { ImagePicker } from "./image-picker";
+import { LinkImportPanel } from "./link-import-panel";
 
 export function ItemForm() {
   return (
     <form style={{ display: "grid", gap: "16px" }}>
+      <LinkImportPanel />
       <ImagePicker />
 
       <label style={{ display: "grid", gap: "8px" }}>
