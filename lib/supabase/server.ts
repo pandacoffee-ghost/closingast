@@ -1,28 +1,18 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { env } from "@/lib/env";
+import { createClient } from "@supabase/supabase-js";
+import { env, hasSupabaseServerEnv } from "@/lib/env";
 
-export async function createSupabaseServerClient() {
-  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+export function createSupabaseServerClient() {
+  if (!hasSupabaseServerEnv()) {
     return null;
   }
 
-  const cookieStore = await cookies();
-
-  return createServerClient(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  return createClient(
+    env.NEXT_PUBLIC_SUPABASE_URL!,
+    env.SUPABASE_SERVICE_ROLE_KEY!,
     {
-      cookies: {
-        get(name) {
-          return cookieStore.get(name)?.value;
-        },
-        set(name, value, options) {
-          cookieStore.set(name, value, options);
-        },
-        remove(name, options) {
-          cookieStore.set(name, "", { ...options, maxAge: 0 });
-        }
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
       }
     }
   );
