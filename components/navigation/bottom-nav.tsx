@@ -17,10 +17,10 @@ export function BottomNav() {
         display: "grid",
         gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
         gap: "8px",
-        padding: "12px 16px 20px",
+        padding: "14px 16px 24px",
         borderTop: "1px solid rgba(29, 27, 25, 0.08)",
-        background: "rgba(255, 250, 242, 0.95)",
-        backdropFilter: "blur(12px)"
+        background: "rgba(255, 250, 242, 0.82)",
+        backdropFilter: "blur(18px)"
       }}
     >
       {items.map((item) => (
@@ -31,7 +31,10 @@ export function BottomNav() {
             textAlign: "center",
             color: item.href === "/wardrobe" ? "#1d1b19" : "#6f655b",
             fontWeight: item.href === "/wardrobe" ? 700 : 500,
-            textDecoration: "none"
+            textDecoration: "none",
+            padding: "8px 6px",
+            borderRadius: "999px",
+            background: item.href === "/wardrobe" ? "rgba(31, 26, 22, 0.08)" : "transparent"
           }}
         >
           {item.label}

@@ -10,7 +10,7 @@ export function ImagePicker() {
         padding: "18px",
         borderRadius: "20px",
         border: "1px dashed #c9b79b",
-        background: "#fffaf2"
+        background: "rgba(255, 250, 242, 0.94)"
       }}
     >
       <span style={{ fontWeight: 600 }}>上传衣服图片</span>

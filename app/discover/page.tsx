@@ -7,11 +7,14 @@ export default async function DiscoverPage() {
   const duplicates = await getPossibleDuplicates();
 
   return (
-    <main style={{ minHeight: "100dvh", padding: "24px 20px", background: "#f4efe6" }}>
+    <main style={{ minHeight: "100dvh", padding: "28px 20px 40px", background: "transparent" }}>
       <section style={{ display: "grid", gap: "18px", maxWidth: "620px", margin: "0 auto" }}>
         <header style={{ display: "grid", gap: "6px" }}>
-          <span style={{ color: "#8b7764" }}>整理视图</span>
-          <h1 style={{ margin: 0 }}>发现</h1>
+          <span style={{ color: "#8b7764", letterSpacing: "0.04em" }}>整理视图</span>
+          <h1 style={{ margin: 0, fontSize: "38px", lineHeight: 0.98 }}>发现</h1>
+          <p style={{ margin: 0, color: "#6d6459", maxWidth: "28rem" }}>
+            把最近新增、可能重复和待整理衣物集中到更容易扫视的位置。
+          </p>
         </header>
 
         <DiscoverSection

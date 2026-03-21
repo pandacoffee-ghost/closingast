@@ -9,12 +9,7 @@ export function FilterBar() {
         aria-label="搜索衣物"
         placeholder="搜索白色针织 / 卡其风衣"
         style={{
-          width: "100%",
-          padding: "14px 16px",
-          borderRadius: "18px",
-          border: "1px solid #d8c7a8",
-          fontSize: "16px",
-          background: "#fffaf2"
+          boxShadow: "0 14px 28px rgba(45, 31, 17, 0.06)"
         }}
       />
 
@@ -26,9 +21,10 @@ export function FilterBar() {
               whiteSpace: "nowrap",
               padding: "8px 14px",
               borderRadius: "999px",
-              background: "#efe3ce",
+              background: "rgba(239, 227, 206, 0.9)",
               color: "#5d544a",
-              fontSize: "14px"
+              fontSize: "14px",
+              border: "1px solid rgba(64, 48, 34, 0.08)"
             }}
           >
             {filter}

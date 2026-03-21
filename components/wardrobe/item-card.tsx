@@ -16,12 +16,12 @@ export function ItemCard({ title, category, color, tone }: ItemCardProps) {
           aspectRatio: "3 / 4",
           borderRadius: "22px",
           background: tone,
-          boxShadow: "inset 0 0 0 1px rgba(29, 27, 25, 0.06)"
+          boxShadow: "0 20px 38px rgba(44, 31, 21, 0.12), inset 0 0 0 1px rgba(29, 27, 25, 0.06)"
         }}
       />
 
-      <div style={{ display: "grid", gap: "4px" }}>
-        <strong>{title}</strong>
+      <div style={{ display: "grid", gap: "4px", minHeight: "58px", padding: "2px 2px 0" }}>
+        <strong style={{ fontSize: "17px", lineHeight: 1.2 }}>{title}</strong>
         <span style={{ color: "#6d6459", fontSize: "14px" }}>
           {category} · {color}
         </span>

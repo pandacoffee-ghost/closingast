@@ -1,5 +1,8 @@
 :root {
   color-scheme: light;
+  --bg: #f6f0e7;
+  --text: #1f1a16;
+  --line: rgba(64, 48, 34, 0.12);
 }
 
 * {
@@ -10,7 +13,52 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  font-family: sans-serif;
-  background: #f4efe6;
-  color: #1d1b19;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.75) 0%, transparent 30%),
+    linear-gradient(180deg, #fbf6ef 0%, var(--bg) 42%, #ecdfcb 100%);
+  color: var(--text);
+}
+
+body {
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: rgba(255, 250, 242, 0.96);
+  color: var(--text);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: none;
+  border-color: rgba(175, 111, 79, 0.55);
+  box-shadow: 0 0 0 4px rgba(175, 111, 79, 0.14);
+}
+
+button {
+  min-height: 48px;
+  transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+}
+
+button:active {
+  transform: scale(0.985);
 }

@@ -47,12 +47,12 @@ export function ItemFormClient() {
       <LinkImportPanel />
       <ImagePicker />
 
-      <label style={{ display: "grid", gap: "8px" }}>
+      <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         标题
         <input name="title" placeholder="例如：白色衬衫" required />
       </label>
 
-      <label style={{ display: "grid", gap: "8px" }}>
+      <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         类目
         <select name="category" defaultValue="top">
           <option value="top">上装</option>
@@ -62,7 +62,7 @@ export function ItemFormClient() {
         </select>
       </label>
 
-      <label style={{ display: "grid", gap: "8px" }}>
+      <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         季节
         <select name="season" defaultValue="spring">
           <option value="spring">春</option>
@@ -72,12 +72,12 @@ export function ItemFormClient() {
         </select>
       </label>
 
-      <label style={{ display: "grid", gap: "8px" }}>
+      <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         颜色
         <input name="color" placeholder="white / cream / black" defaultValue="white" required />
       </label>
 
-      <label style={{ display: "grid", gap: "8px" }}>
+      <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         场景标签
         <input name="styleTag" placeholder="commute / casual" defaultValue="commute" required />
       </label>
@@ -96,9 +96,10 @@ export function ItemFormClient() {
           borderRadius: "999px",
           padding: "14px 18px",
           fontWeight: 700,
-          background: "#1d1b19",
+          background: "linear-gradient(180deg, #2e261f 0%, #1d1b19 100%)",
           color: "#fffaf2",
-          opacity: isSubmitting ? 0.7 : 1
+          opacity: isSubmitting ? 0.7 : 1,
+          boxShadow: "0 16px 28px rgba(29, 27, 25, 0.18)"
         }}
       >
         {isSubmitting ? "保存中..." : "保存"}
