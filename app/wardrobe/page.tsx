@@ -2,8 +2,11 @@ import React from "react";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { FilterBar } from "@/components/wardrobe/filter-bar";
 import { ItemGrid } from "@/components/wardrobe/item-grid";
+import { getRecentItems } from "@/lib/items/queries";
 
 export default async function WardrobePage() {
+  const items = await getRecentItems();
+
   return (
     <main
       style={{
@@ -20,7 +23,7 @@ export default async function WardrobePage() {
         </header>
 
         <FilterBar />
-        <ItemGrid />
+        <ItemGrid items={items} />
       </section>
 
       <BottomNav />

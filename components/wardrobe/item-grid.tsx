@@ -1,12 +1,24 @@
 import React from "react";
 import { ItemCard } from "./item-card";
 
-const sampleItems = [
-  { title: "米白针织开衫", category: "上装", color: "米白", tone: "linear-gradient(180deg, #f3e6d5, #d9c5ae)" },
-  { title: "卡其短风衣", category: "外套", color: "卡其", tone: "linear-gradient(180deg, #d9c4a1, #b38b68)" }
+type ItemGridItem = {
+  id: string;
+  title: string;
+  category: string;
+  color: string;
+};
+
+const tones = [
+  "linear-gradient(180deg, #f3e6d5, #d9c5ae)",
+  "linear-gradient(180deg, #d9c4a1, #b38b68)",
+  "linear-gradient(180deg, #e7e0d6, #cdb7a2)"
 ];
 
-export function ItemGrid() {
+type ItemGridProps = {
+  items: ItemGridItem[];
+};
+
+export function ItemGrid({ items }: ItemGridProps) {
   return (
     <section
       aria-label="衣物列表"
@@ -16,8 +28,14 @@ export function ItemGrid() {
         gap: "18px"
       }}
     >
-      {sampleItems.map((item) => (
-        <ItemCard key={item.title} {...item} />
+      {items.map((item, index) => (
+        <ItemCard
+          key={item.id}
+          title={item.title}
+          category={item.category}
+          color={item.color}
+          tone={tones[index % tones.length]}
+        />
       ))}
     </section>
   );
