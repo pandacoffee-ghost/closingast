@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FilterBar } from "./filter-bar";
 import { ItemGrid } from "./item-grid";
 
@@ -55,6 +55,10 @@ export function WardrobeExplorer({ items }: WardrobeExplorerProps) {
       current.includes(value) ? current.filter((item) => item !== value) : [...current, value]
     );
   }
+
+  useEffect(() => {
+    setVisibleCount(pageSize);
+  }, [activeFilters, query]);
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();

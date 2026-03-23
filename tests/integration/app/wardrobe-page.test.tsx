@@ -12,5 +12,6 @@ describe("WardrobePage", () => {
     expect(screen.getByText("上装 · 米白")).toBeInTheDocument();
     expect(screen.queryByText("top · 米白")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "查看 米白针织开衫 详情" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "米白针织开衫" })).toHaveAttribute("loading", "lazy");
   });
 });

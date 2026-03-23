@@ -39,6 +39,7 @@ export function ItemCard({ id, title, category, color, imageUrl, tone }: ItemCar
             <img
               src={imageUrl}
               alt={title}
+              loading="lazy"
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
             />
           </div>
