@@ -4,6 +4,31 @@ import React, { useMemo, useState } from "react";
 import { FilterBar } from "./filter-bar";
 import { ItemGrid } from "./item-grid";
 
+const tokenAliases: Record<string, string[]> = {
+  spring: ["spring", "春"],
+  summer: ["summer", "夏"],
+  autumn: ["autumn", "秋"],
+  winter: ["winter", "冬"],
+  commute: ["commute", "通勤"],
+  casual: ["casual", "休闲"],
+  date: ["date", "约会"],
+  sport: ["sport", "运动"]
+};
+
+function expandSearchTokens(values: string[]) {
+  return values.flatMap((value) => {
+    const normalized = value.trim().toLowerCase();
+    const aliases = tokenAliases[normalized];
+
+    if (aliases) {
+      return aliases;
+    }
+
+    const reverseAliases = Object.values(tokenAliases).find((candidate) => candidate.includes(normalized));
+    return reverseAliases ?? [normalized];
+  });
+}
+
 type WardrobeExplorerItem = {
   id: string;
   title: string;
@@ -32,18 +57,26 @@ export function WardrobeExplorer({ items }: WardrobeExplorerProps) {
     const normalizedQuery = query.trim().toLowerCase();
 
     return items.filter((item) => {
-      const searchableText = [item.title, item.category, item.color, ...item.season, ...item.styleTags]
+      const searchableText = [
+        item.title,
+        item.category,
+        item.color,
+        ...expandSearchTokens(item.season),
+        ...expandSearchTokens(item.styleTags)
+      ]
         .join(" ")
         .toLowerCase();
 
       const matchesQuery = normalizedQuery.length === 0 || searchableText.includes(normalizedQuery);
+      const normalizedFilterTerms = new Set([
+        item.color,
+        ...expandSearchTokens(item.season),
+        ...expandSearchTokens(item.styleTags)
+      ]);
 
       const matchesFilters =
         activeFilters.length === 0 ||
-        activeFilters.every(
-          (filter) =>
-            item.color.includes(filter) || item.season.includes(filter) || item.styleTags.includes(filter)
-        );
+        activeFilters.every((filter) => normalizedFilterTerms.has(filter.toLowerCase()));
 
       return matchesQuery && matchesFilters;
     });

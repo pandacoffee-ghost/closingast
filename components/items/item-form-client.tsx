@@ -32,12 +32,13 @@ export function ItemFormClient() {
     setError(null);
 
     const formData = new FormData(event.currentTarget);
+    const styleTag = String(formData.get("styleTag") ?? "").trim();
     const payload = {
       title: String(formData.get("title") ?? ""),
       category: String(formData.get("category") ?? "top"),
       season: [String(formData.get("season") ?? "spring")],
       color: String(formData.get("color") ?? "白色"),
-      styleTags: [String(formData.get("styleTag") ?? "通勤")],
+      styleTags: styleTag ? [styleTag] : [],
       imageDataUrl: previewUrl ?? undefined
     };
 
@@ -96,7 +97,7 @@ export function ItemFormClient() {
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         场景标签
-        <input name="styleTag" placeholder="例如：通勤 / 休闲 / 约会" defaultValue="通勤" required />
+        <input name="styleTag" placeholder="例如：通勤 / 休闲 / 约会（可不填）" />
       </label>
 
       {error ? (
