@@ -7,6 +7,7 @@ export const itemInputSchema = z.object({
   season: z.array(z.enum(itemSeasons)).min(1),
   color: z.string().trim().min(1).max(40),
   styleTags: z.array(z.string().trim().min(1).max(30)).default([]),
+  imageDataUrl: z.string().min(1).optional(),
   notes: z.string().trim().max(300).optional(),
   status: z.enum(itemStatuses).default("active"),
   sourcePlatform: z.enum(sourcePlatforms).default("manual")

@@ -28,13 +28,16 @@ export default async function DiscoverPage() {
         <DiscoverSection
           title="最近新增"
           description="最近录入的衣物，方便快速回看。"
-          items={recentItems.map((item) => item.title)}
+          items={recentItems.map((item) => ({ title: item.title, imageUrl: item.imageUrl }))}
         />
 
         <DiscoverSection
           title="可能重复"
           description="优先检查这些和已有衣物相似的单品。"
-          items={duplicates.map((item) => `${item.title} · ${item.reasons.join(" / ")}`)}
+          items={duplicates.map((item) => ({
+            title: `${item.title} · ${item.reasons.join(" / ")}`,
+            imageUrl: item.imageUrl
+          }))}
         />
       </section>
 

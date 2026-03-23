@@ -29,6 +29,19 @@ export async function createItem(input: ItemInput) {
       throw error;
     }
 
+    if (parsed.imageDataUrl) {
+      const { error: imageError } = await supabase.from("item_images").insert({
+        item_id: data.id,
+        image_path: parsed.imageDataUrl,
+        sort_order: 0,
+        is_primary: true
+      });
+
+      if (imageError) {
+        throw imageError;
+      }
+    }
+
     return {
       id: data.id,
       userId: data.user_id,
@@ -37,6 +50,7 @@ export async function createItem(input: ItemInput) {
       season: data.season,
       color: data.color,
       styleTags: data.style_tags,
+      imageDataUrl: parsed.imageDataUrl,
       sourcePlatform: data.source_platform,
       notes: data.notes ?? undefined,
       status: data.status,

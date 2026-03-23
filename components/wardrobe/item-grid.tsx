@@ -6,6 +6,7 @@ type ItemGridItem = {
   title: string;
   category: string;
   color: string;
+  imageUrl?: string;
 };
 
 const tones = [
@@ -34,6 +35,7 @@ export function ItemGrid({ items }: ItemGridProps) {
           title={item.title}
           category={item.category}
           color={item.color}
+          imageUrl={item.imageUrl}
           tone={tones[index % tones.length]}
         />
       ))}

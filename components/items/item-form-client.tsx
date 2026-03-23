@@ -9,6 +9,22 @@ export function ItemFormClient() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreviewUrl(typeof reader.result === "string" ? reader.result : null);
+    };
+    reader.readAsDataURL(file);
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,8 +36,9 @@ export function ItemFormClient() {
       title: String(formData.get("title") ?? ""),
       category: String(formData.get("category") ?? "top"),
       season: [String(formData.get("season") ?? "spring")],
-      color: String(formData.get("color") ?? "white"),
-      styleTags: [String(formData.get("styleTag") ?? "commute")]
+      color: String(formData.get("color") ?? "白色"),
+      styleTags: [String(formData.get("styleTag") ?? "通勤")],
+      imageDataUrl: previewUrl ?? undefined
     };
 
     const response = await fetch("/api/items", {
@@ -45,7 +62,7 @@ export function ItemFormClient() {
   return (
     <form style={{ display: "grid", gap: "16px" }} onSubmit={handleSubmit}>
       <LinkImportPanel />
-      <ImagePicker />
+      <ImagePicker previewUrl={previewUrl} onChange={handleImageChange} />
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         标题
@@ -74,12 +91,12 @@ export function ItemFormClient() {
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         颜色
-        <input name="color" placeholder="white / cream / black" defaultValue="white" required />
+        <input name="color" placeholder="例如：白色 / 米白 / 卡其" defaultValue="白色" required />
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         场景标签
-        <input name="styleTag" placeholder="commute / casual" defaultValue="commute" required />
+        <input name="styleTag" placeholder="例如：通勤 / 休闲 / 约会" defaultValue="通勤" required />
       </label>
 
       {error ? (

@@ -3,7 +3,10 @@ import React from "react";
 type DiscoverSectionProps = {
   title: string;
   description: string;
-  items: string[];
+  items: Array<{
+    title: string;
+    imageUrl?: string;
+  }>;
 };
 
 export function DiscoverSection({ title, description, items }: DiscoverSectionProps) {
@@ -26,15 +29,32 @@ export function DiscoverSection({ title, description, items }: DiscoverSectionPr
       <div style={{ display: "grid", gap: "8px" }}>
         {items.map((item) => (
           <div
-            key={item}
+            key={item.title}
             style={{
+              display: "grid",
+              gridTemplateColumns: item.imageUrl ? "48px 1fr" : "1fr",
+              alignItems: "center",
+              gap: "12px",
               padding: "12px 14px",
               borderRadius: "16px",
               background: "#f6edde",
               color: "#3a332d"
             }}
           >
-            {item}
+            {item.imageUrl ? (
+              <img
+                src={item.imageUrl}
+                alt={item.title}
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  objectFit: "cover",
+                  display: "block"
+                }}
+              />
+            ) : null}
+            <span>{item.title}</span>
           </div>
         ))}
       </div>
