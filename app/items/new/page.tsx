@@ -1,34 +1,8 @@
 import React from "react";
 import { BottomNav } from "@/components/navigation/bottom-nav";
-import { DuplicateHints } from "@/components/items/duplicate-hints";
 import { ItemForm } from "@/components/items/item-form";
-import { rankDuplicateHints } from "@/lib/items/duplicate-hints";
-import { getRecentItems } from "@/lib/items/queries";
 
 export default async function NewItemPage() {
-  const recentItems = await getRecentItems();
-  const duplicateHints = rankDuplicateHints(
-    {
-      title: "米白针织开衫",
-      category: "top",
-      season: ["spring"],
-      color: "cream",
-      styleTags: ["commute"]
-    },
-    [
-      ...recentItems.map((item) => ({
-        id: item.id,
-        title: item.title,
-        category: item.category === "上装" ? "top" : item.category === "外套" ? "outerwear" : "top",
-        season: item.season.map((value) =>
-          value === "春" ? "spring" : value === "秋" ? "autumn" : "spring"
-        ),
-        color: item.color === "米白" ? "cream" : item.color.toLowerCase(),
-        styleTags: item.styleTags.length > 0 ? item.styleTags : ["commute"]
-      }))
-    ]
-  );
-
   return (
     <main
       style={{
@@ -48,7 +22,6 @@ export default async function NewItemPage() {
         </header>
 
         <ItemForm />
-        <DuplicateHints hints={duplicateHints} />
       </section>
 
       <BottomNav />
