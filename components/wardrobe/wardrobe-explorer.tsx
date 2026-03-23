@@ -36,6 +36,7 @@ type WardrobeExplorerItem = {
   color: string;
   season: string[];
   styleTags: string[];
+  notes?: string;
   imageUrl?: string;
 };
 
@@ -61,6 +62,7 @@ export function WardrobeExplorer({ items }: WardrobeExplorerProps) {
         item.title,
         item.category,
         item.color,
+        item.notes ?? "",
         ...expandSearchTokens(item.season),
         ...expandSearchTokens(item.styleTags)
       ]

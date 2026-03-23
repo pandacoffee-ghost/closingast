@@ -18,6 +18,7 @@ describe("WardrobeExplorer", () => {
             color: "米白",
             season: ["spring", "autumn"],
             styleTags: ["commute"],
+            notes: "版型偏宽松，适合春秋通勤",
             imageUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' />"
           },
           {
@@ -26,7 +27,8 @@ describe("WardrobeExplorer", () => {
             category: "裙子",
             color: "蓝色",
             season: ["summer"],
-            styleTags: ["date"]
+            styleTags: ["date"],
+            notes: "适合周末出游"
           }
         ]}
       />
@@ -40,6 +42,11 @@ describe("WardrobeExplorer", () => {
 
     await user.clear(searchInput);
     await user.type(searchInput, "通勤");
+    expect(screen.getByText("米白针织开衫")).toBeInTheDocument();
+    expect(screen.queryByText("蓝色牛仔裙")).not.toBeInTheDocument();
+
+    await user.clear(searchInput);
+    await user.type(searchInput, "宽松");
     expect(screen.getByText("米白针织开衫")).toBeInTheDocument();
     expect(screen.queryByText("蓝色牛仔裙")).not.toBeInTheDocument();
   });
