@@ -1,10 +1,22 @@
+"use client";
+
 import React from "react";
 
 type LinkImportPanelProps = {
   defaultValue?: string;
+  isImporting?: boolean;
+  onImport?: () => void;
+  onSourceUrlChange?: (value: string) => void;
+  importSummary?: string | null;
 };
 
-export function LinkImportPanel({ defaultValue }: LinkImportPanelProps) {
+export function LinkImportPanel({
+  defaultValue,
+  isImporting,
+  onImport,
+  onSourceUrlChange,
+  importSummary
+}: LinkImportPanelProps) {
   return (
     <section
       style={{
@@ -24,10 +36,12 @@ export function LinkImportPanel({ defaultValue }: LinkImportPanelProps) {
       <input
         name="sourceUrl"
         placeholder="粘贴淘宝 / 京东商品链接"
-        defaultValue={defaultValue ?? ""}
+        value={defaultValue ?? ""}
+        onChange={(event) => onSourceUrlChange?.(event.target.value)}
       />
       <button
         type="button"
+        onClick={onImport}
         style={{
           justifySelf: "start",
           border: 0,
@@ -39,8 +53,11 @@ export function LinkImportPanel({ defaultValue }: LinkImportPanelProps) {
           boxShadow: "0 10px 18px rgba(64, 48, 34, 0.08)"
         }}
       >
-        解析链接
+        {isImporting ? "解析中..." : "解析链接"}
       </button>
+      {importSummary ? (
+        <span style={{ color: "#6d6459", fontSize: "14px" }}>{importSummary}</span>
+      ) : null}
     </section>
   );
 }
