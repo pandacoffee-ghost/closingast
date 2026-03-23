@@ -14,5 +14,13 @@ describe("SettingsPage", () => {
     expect(screen.getByText("上装")).toBeInTheDocument();
     expect(screen.getByText("颜色分布")).toBeInTheDocument();
     expect(screen.getByText("米白")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "导出 JSON" })).toHaveAttribute(
+      "href",
+      "/api/export?format=json"
+    );
+    expect(screen.getByRole("link", { name: "导出 CSV" })).toHaveAttribute(
+      "href",
+      "/api/export?format=csv"
+    );
   });
 });

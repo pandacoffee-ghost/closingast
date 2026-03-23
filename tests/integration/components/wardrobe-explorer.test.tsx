@@ -50,4 +50,62 @@ describe("WardrobeExplorer", () => {
     expect(screen.getByText("米白针织开衫")).toBeInTheDocument();
     expect(screen.queryByText("蓝色牛仔裙")).not.toBeInTheDocument();
   });
+
+  it("shows a load more action when the wardrobe has many items", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <WardrobeExplorer
+        items={[
+          {
+            id: "item-1",
+            title: "米白针织开衫",
+            category: "上装",
+            color: "米白",
+            season: ["spring"],
+            styleTags: ["commute"]
+          },
+          {
+            id: "item-2",
+            title: "蓝色牛仔裙",
+            category: "裙子",
+            color: "蓝色",
+            season: ["summer"],
+            styleTags: ["date"]
+          },
+          {
+            id: "item-3",
+            title: "卡其短风衣",
+            category: "外套",
+            color: "卡其",
+            season: ["autumn"],
+            styleTags: ["commute"]
+          },
+          {
+            id: "item-4",
+            title: "黑色西裤",
+            category: "下装",
+            color: "黑色",
+            season: ["autumn"],
+            styleTags: ["commute"]
+          },
+          {
+            id: "item-5",
+            title: "白色衬衫",
+            category: "上装",
+            color: "白色",
+            season: ["spring"],
+            styleTags: ["commute"]
+          }
+        ]}
+      />
+    );
+
+    expect(screen.queryByText("白色衬衫")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "继续加载" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "继续加载" }));
+
+    expect(screen.getByText("白色衬衫")).toBeInTheDocument();
+  });
 });

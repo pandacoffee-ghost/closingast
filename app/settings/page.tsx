@@ -57,6 +57,43 @@ export default async function SettingsPage() {
 
         <section
           style={{
+            display: "flex",
+            gap: "12px",
+            flexWrap: "wrap"
+          }}
+        >
+          <a
+            href="/api/export?format=json"
+            style={{
+              textDecoration: "none",
+              borderRadius: "999px",
+              padding: "12px 16px",
+              background: "#efe3ce",
+              color: "#1d1b19",
+              fontWeight: 700,
+              boxShadow: "0 10px 18px rgba(64, 48, 34, 0.08)"
+            }}
+          >
+            导出 JSON
+          </a>
+          <a
+            href="/api/export?format=csv"
+            style={{
+              textDecoration: "none",
+              borderRadius: "999px",
+              padding: "12px 16px",
+              background: "#efe3ce",
+              color: "#1d1b19",
+              fontWeight: 700,
+              boxShadow: "0 10px 18px rgba(64, 48, 34, 0.08)"
+            }}
+          >
+            导出 CSV
+          </a>
+        </section>
+
+        <section
+          style={{
             display: "grid",
             gap: "14px",
             padding: "18px",

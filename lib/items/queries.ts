@@ -124,6 +124,41 @@ export async function getRecentItems() {
   return sampleItems;
 }
 
+export async function getAllItems() {
+  const supabase = createSupabaseServerClient();
+
+  if (supabase) {
+    const { data } = await supabase
+      .from("items")
+      .select(
+        "id, title, category, season, color, style_tags, status, source_platform, source_url, store_name, price, notes, created_at, updated_at, item_images(image_path,is_primary,sort_order)"
+      )
+      .order("created_at", { ascending: false });
+
+    if (data) {
+      return data.map((item) => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        season: item.season,
+        color: item.color,
+        styleTags: item.style_tags ?? [],
+        status: item.status ?? "active",
+        imageUrl: Array.isArray(item.item_images) ? item.item_images[0]?.image_path : undefined,
+        sourcePlatform: item.source_platform,
+        sourceUrl: item.source_url ?? "",
+        storeName: item.store_name ?? "",
+        price: item.price ? String(item.price) : "",
+        notes: item.notes ?? "",
+        createdAt: item.created_at,
+        updatedAt: item.updated_at
+      }));
+    }
+  }
+
+  return sampleItems;
+}
+
 export async function getPossibleDuplicates() {
   const supabase = createSupabaseServerClient();
 

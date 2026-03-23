@@ -45,8 +45,10 @@ type WardrobeExplorerProps = {
 };
 
 export function WardrobeExplorer({ items }: WardrobeExplorerProps) {
+  const pageSize = 4;
   const [query, setQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [visibleCount, setVisibleCount] = useState(pageSize);
 
   function toggleFilter(value: string) {
     setActiveFilters((current) =>
@@ -84,6 +86,9 @@ export function WardrobeExplorer({ items }: WardrobeExplorerProps) {
     });
   }, [activeFilters, items, query]);
 
+  const visibleItems = filteredItems.slice(0, visibleCount);
+  const canLoadMore = visibleCount < filteredItems.length;
+
   return (
     <>
       <FilterBar
@@ -92,7 +97,25 @@ export function WardrobeExplorer({ items }: WardrobeExplorerProps) {
         onQueryChange={setQuery}
         onToggleFilter={toggleFilter}
       />
-      <ItemGrid items={filteredItems} />
+      <ItemGrid items={visibleItems} />
+      {canLoadMore ? (
+        <button
+          type="button"
+          onClick={() => setVisibleCount((current) => current + pageSize)}
+          style={{
+            justifySelf: "center",
+            border: 0,
+            borderRadius: "999px",
+            padding: "12px 16px",
+            background: "#efe3ce",
+            color: "#1d1b19",
+            fontWeight: 700,
+            boxShadow: "0 10px 18px rgba(64, 48, 34, 0.08)"
+          }}
+        >
+          继续加载
+        </button>
+      ) : null}
     </>
   );
 }
