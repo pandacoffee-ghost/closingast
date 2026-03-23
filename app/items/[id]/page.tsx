@@ -1,5 +1,6 @@
 import React from "react";
 import { BottomNav } from "@/components/navigation/bottom-nav";
+import { DeleteItemButton } from "@/components/items/delete-item-button";
 import { DuplicateHints } from "@/components/items/duplicate-hints";
 import { getItemById } from "@/lib/items/queries";
 
@@ -59,6 +60,8 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
           <strong>备注</strong>
           <span>{item.notes}</span>
         </section>
+
+        <DeleteItemButton itemId={item.id} />
 
         <DuplicateHints
           hints={[

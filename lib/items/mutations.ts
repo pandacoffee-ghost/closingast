@@ -67,3 +67,17 @@ export async function createItem(input: ItemInput) {
     ...parsed
   };
 }
+
+export async function deleteItem(id: string) {
+  const supabase = createSupabaseServerClient();
+
+  if (supabase) {
+    const { error } = await supabase.from("items").delete().eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    return;
+  }
+}
