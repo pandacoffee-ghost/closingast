@@ -23,7 +23,8 @@ const sampleItems: WardrobeItem[] = [
     season: ["春", "秋"],
     color: "米白",
     styleTags: ["通勤"],
-    imageUrl: undefined,
+    imageUrl:
+      "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 400'><rect width='320' height='400' rx='28' fill='%23efe2cf'/><path d='M110 92c18-16 82-16 100 0l38 48-34 30-18-18v154c0 10-8 18-18 18h-36c-10 0-18-8-18-18V152l-18 18-34-30 38-48z' fill='%23d7c2aa'/></svg>",
     sourcePlatform: "淘宝",
     sourceUrl: "https://item.taobao.com/item.htm?id=1",
     storeName: "简约衣橱店",

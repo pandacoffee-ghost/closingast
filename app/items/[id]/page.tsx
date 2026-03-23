@@ -24,15 +24,32 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
       }}
     >
       <section style={{ padding: "28px 20px 40px", display: "grid", gap: "20px", maxWidth: "560px", margin: "0 auto" }}>
-        <div
-          aria-hidden="true"
-          style={{
-            aspectRatio: "4 / 5",
-            borderRadius: "28px",
-            background: "linear-gradient(180deg, #f2e4d2, #d6bda2)",
-            boxShadow: "0 24px 48px rgba(44, 31, 21, 0.14)"
-          }}
-        />
+        {item.imageUrl ? (
+          <div
+            style={{
+              aspectRatio: "4 / 5",
+              borderRadius: "28px",
+              overflow: "hidden",
+              boxShadow: "0 24px 48px rgba(44, 31, 21, 0.14)"
+            }}
+          >
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          </div>
+        ) : (
+          <div
+            aria-hidden="true"
+            style={{
+              aspectRatio: "4 / 5",
+              borderRadius: "28px",
+              background: "linear-gradient(180deg, #f2e4d2, #d6bda2)",
+              boxShadow: "0 24px 48px rgba(44, 31, 21, 0.14)"
+            }}
+          />
+        )}
 
         <header style={{ display: "grid", gap: "8px" }}>
           <span style={{ color: "#8b7764" }}>{item.category}</span>
