@@ -1,9 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { formatSeasonLabel, getItemSourceDetails } from "@/lib/items/presentation";
+import {
+  formatCategoryLabel,
+  formatSeasonLabel,
+  getItemSourceDetails
+} from "@/lib/items/presentation";
 
 describe("item presentation helpers", () => {
   it("localizes english season values into Chinese labels", () => {
     expect(formatSeasonLabel(["spring", "autumn"])).toBe("春 / 秋");
+  });
+
+  it("localizes english category values into Chinese labels", () => {
+    expect(formatCategoryLabel("top")).toBe("上装");
   });
 
   it("describes image imports with imported time", () => {

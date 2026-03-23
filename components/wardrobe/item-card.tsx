@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { formatCategoryLabel } from "@/lib/items/presentation";
 
 type ItemCardProps = {
   id: string;
@@ -11,6 +12,8 @@ type ItemCardProps = {
 };
 
 export function ItemCard({ id, title, category, color, imageUrl, tone }: ItemCardProps) {
+  const categoryLabel = formatCategoryLabel(category);
+
   return (
     <Link
       href={`/items/${id}`}
@@ -55,7 +58,7 @@ export function ItemCard({ id, title, category, color, imageUrl, tone }: ItemCar
         <div style={{ display: "grid", gap: "4px", minHeight: "58px", padding: "2px 2px 0" }}>
           <strong style={{ fontSize: "17px", lineHeight: 1.2 }}>{title}</strong>
           <span style={{ color: "#6d6459", fontSize: "14px" }}>
-            {category} · {color}
+            {categoryLabel} · {color}
           </span>
         </div>
       </article>

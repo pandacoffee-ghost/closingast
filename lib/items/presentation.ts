@@ -5,6 +5,15 @@ const seasonLabels: Record<string, string> = {
   winter: "冬"
 };
 
+const categoryLabels: Record<string, string> = {
+  top: "上装",
+  bottom: "下装",
+  dress: "裙子",
+  outerwear: "外套",
+  shoes: "鞋子",
+  bag: "包袋"
+};
+
 type ItemSourceDetailsInput = {
   sourcePlatform: string;
   sourceUrl: string;
@@ -37,6 +46,10 @@ function formatDateTime(value: string) {
 
 export function formatSeasonLabel(seasons: string[]) {
   return seasons.map((season) => seasonLabels[season] ?? season).join(" / ");
+}
+
+export function formatCategoryLabel(category: string) {
+  return categoryLabels[category] ?? category;
 }
 
 export function getItemSourceDetails(input: ItemSourceDetailsInput) {
