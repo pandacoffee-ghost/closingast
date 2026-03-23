@@ -11,5 +11,9 @@ describe("ItemDetailPage", () => {
     expect(screen.getByText("来源")).toBeInTheDocument();
     expect(screen.getByText("淘宝商品链接导入")).toBeInTheDocument();
     expect(screen.queryByText("可能重复")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "编辑这件衣服" })).toHaveAttribute(
+      "href",
+      "/items/sample-1/edit"
+    );
   });
 });

@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { DeleteItemButton } from "@/components/items/delete-item-button";
 import { formatSeasonLabel, getItemSourceDetails } from "@/lib/items/presentation";
@@ -79,6 +80,22 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
           <strong>备注</strong>
           <span>{item.notes}</span>
         </section>
+
+        <Link
+          href={`/items/${item.id}/edit`}
+          style={{
+            justifySelf: "start",
+            textDecoration: "none",
+            borderRadius: "999px",
+            padding: "12px 16px",
+            background: "#efe3ce",
+            color: "#1d1b19",
+            fontWeight: 700,
+            boxShadow: "0 10px 18px rgba(64, 48, 34, 0.08)"
+          }}
+        >
+          编辑这件衣服
+        </Link>
 
         <DeleteItemButton itemId={item.id} />
       </section>

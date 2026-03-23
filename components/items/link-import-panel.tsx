@@ -1,6 +1,10 @@
 import React from "react";
 
-export function LinkImportPanel() {
+type LinkImportPanelProps = {
+  defaultValue?: string;
+};
+
+export function LinkImportPanel({ defaultValue }: LinkImportPanelProps) {
   return (
     <section
       style={{
@@ -17,7 +21,11 @@ export function LinkImportPanel() {
       <p style={{ margin: 0, color: "#6d6459", lineHeight: 1.5 }}>
         粘贴淘宝或京东商品链接。解析失败时也可以继续手动录入。
       </p>
-      <input name="sourceUrl" placeholder="粘贴淘宝 / 京东商品链接" />
+      <input
+        name="sourceUrl"
+        placeholder="粘贴淘宝 / 京东商品链接"
+        defaultValue={defaultValue ?? ""}
+      />
       <button
         type="button"
         style={{

@@ -17,11 +17,25 @@ function detectSourcePlatform(sourceUrl: string) {
   return "manual";
 }
 
-export function ItemFormClient() {
+type ItemFormClientProps = {
+  itemId?: string;
+  initialValues?: {
+    title?: string;
+    category?: string;
+    season?: string[];
+    color?: string;
+    styleTags?: string[];
+    sourceUrl?: string;
+    imageUrl?: string;
+    notes?: string;
+  };
+};
+
+export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialValues?.imageUrl ?? null);
 
   async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -49,18 +63,18 @@ export function ItemFormClient() {
     const sourcePlatform = detectSourcePlatform(sourceUrl);
     const payload = {
       title: String(formData.get("title") ?? ""),
-      category: String(formData.get("category") ?? "top"),
-      season: [String(formData.get("season") ?? "spring")],
-      color: String(formData.get("color") ?? "白色"),
+      category: String(formData.get("category") ?? initialValues?.category ?? "top"),
+      season: [String(formData.get("season") ?? initialValues?.season?.[0] ?? "spring")],
+      color: String(formData.get("color") ?? initialValues?.color ?? "白色"),
       styleTags: styleTag ? [styleTag] : [],
-      imageDataUrl: previewUrl ?? undefined
-      ,
+      imageDataUrl: previewUrl ?? undefined,
       sourceUrl,
-      sourcePlatform
+      sourcePlatform,
+      notes: String(formData.get("notes") ?? "").trim() || undefined
     };
 
-    const response = await fetch("/api/items", {
-      method: "POST",
+    const response = await fetch(itemId ? `/api/items/${itemId}` : "/api/items", {
+      method: itemId ? "PATCH" : "POST",
       headers: {
         "content-type": "application/json"
       },
@@ -79,17 +93,22 @@ export function ItemFormClient() {
 
   return (
     <form style={{ display: "grid", gap: "16px" }} onSubmit={handleSubmit}>
-      <LinkImportPanel />
+      <LinkImportPanel defaultValue={initialValues?.sourceUrl} />
       <ImagePicker previewUrl={previewUrl} onChange={handleImageChange} />
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         标题
-        <input name="title" placeholder="例如：白色衬衫" required />
+        <input
+          name="title"
+          placeholder="例如：白色衬衫"
+          defaultValue={initialValues?.title ?? ""}
+          required
+        />
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         类目
-        <select name="category" defaultValue="top">
+        <select name="category" defaultValue={initialValues?.category ?? "top"}>
           <option value="top">上装</option>
           <option value="bottom">下装</option>
           <option value="dress">裙子</option>
@@ -99,7 +118,7 @@ export function ItemFormClient() {
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         季节
-        <select name="season" defaultValue="spring">
+        <select name="season" defaultValue={initialValues?.season?.[0] ?? "spring"}>
           <option value="spring">春</option>
           <option value="summer">夏</option>
           <option value="autumn">秋</option>
@@ -109,12 +128,31 @@ export function ItemFormClient() {
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         颜色
-        <input name="color" placeholder="例如：白色 / 米白 / 卡其" defaultValue="白色" required />
+        <input
+          name="color"
+          placeholder="例如：白色 / 米白 / 卡其"
+          defaultValue={initialValues?.color ?? "白色"}
+          required
+        />
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         场景标签
-        <input name="styleTag" placeholder="例如：通勤 / 休闲 / 约会（可不填）" />
+        <input
+          name="styleTag"
+          placeholder="例如：通勤 / 休闲 / 约会（可不填）"
+          defaultValue={initialValues?.styleTags?.[0] ?? ""}
+        />
+      </label>
+
+      <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
+        备注
+        <textarea
+          name="notes"
+          placeholder="例如：版型偏宽松、适合春秋通勤"
+          defaultValue={initialValues?.notes ?? ""}
+          rows={4}
+        />
       </label>
 
       {error ? (
@@ -137,7 +175,7 @@ export function ItemFormClient() {
           boxShadow: "0 16px 28px rgba(29, 27, 25, 0.18)"
         }}
       >
-        {isSubmitting ? "保存中..." : "保存"}
+        {isSubmitting ? "保存中..." : itemId ? "保存修改" : "保存"}
       </button>
     </form>
   );
