@@ -6,6 +6,8 @@ type ItemGridItem = {
   title: string;
   category: string;
   color: string;
+  season: string[];
+  styleTags: string[];
   imageUrl?: string;
 };
 

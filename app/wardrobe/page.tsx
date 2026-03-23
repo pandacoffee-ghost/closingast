@@ -1,7 +1,6 @@
 import React from "react";
 import { BottomNav } from "@/components/navigation/bottom-nav";
-import { FilterBar } from "@/components/wardrobe/filter-bar";
-import { ItemGrid } from "@/components/wardrobe/item-grid";
+import { WardrobeExplorer } from "@/components/wardrobe/wardrobe-explorer";
 import { getRecentItems } from "@/lib/items/queries";
 
 export default async function WardrobePage() {
@@ -25,8 +24,7 @@ export default async function WardrobePage() {
           </p>
         </header>
 
-        <FilterBar />
-        <ItemGrid items={items} />
+        <WardrobeExplorer items={items} />
       </section>
 
       <BottomNav />
