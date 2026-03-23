@@ -7,6 +7,7 @@ type WardrobeItem = {
   season: string[];
   color: string;
   styleTags: string[];
+  status?: string;
   imageUrl?: string;
   sourcePlatform: string;
   sourceUrl: string;
@@ -25,6 +26,7 @@ const sampleItems: WardrobeItem[] = [
     season: ["春", "秋"],
     color: "米白",
     styleTags: ["通勤"],
+    status: "active",
     imageUrl:
       "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 400'><rect width='320' height='400' rx='28' fill='%23efe2cf'/><path d='M110 92c18-16 82-16 100 0l38 48-34 30-18-18v154c0 10-8 18-18 18h-36c-10 0-18-8-18-18V152l-18 18-34-30 38-48z' fill='%23d7c2aa'/></svg>",
     sourcePlatform: "taobao",
@@ -42,6 +44,7 @@ const sampleItems: WardrobeItem[] = [
     season: ["春", "秋"],
     color: "卡其",
     styleTags: ["通勤"],
+    status: "active",
     imageUrl: undefined,
     sourcePlatform: "jd",
     sourceUrl: "https://item.jd.com/1.html",
@@ -59,7 +62,7 @@ export async function getItemById(id: string) {
   if (supabase) {
     const { data } = await supabase
       .from("items")
-      .select("id, title, category, season, color, style_tags, source_platform, source_url, store_name, price, notes, created_at, updated_at, item_images(image_path,is_primary,sort_order)")
+      .select("id, title, category, season, color, style_tags, status, source_platform, source_url, store_name, price, notes, created_at, updated_at, item_images(image_path,is_primary,sort_order)")
       .eq("id", id)
       .single();
 
@@ -71,6 +74,7 @@ export async function getItemById(id: string) {
         season: data.season,
         color: data.color,
         styleTags: data.style_tags ?? [],
+        status: data.status ?? "active",
         imageUrl: Array.isArray(data.item_images) ? data.item_images[0]?.image_path : undefined,
         sourcePlatform: data.source_platform,
         sourceUrl: data.source_url ?? "",
@@ -92,7 +96,7 @@ export async function getRecentItems() {
   if (supabase) {
     const { data } = await supabase
       .from("items")
-      .select("id, title, category, season, color, style_tags, source_platform, source_url, store_name, price, notes, created_at, updated_at, item_images(image_path,is_primary,sort_order)")
+      .select("id, title, category, season, color, style_tags, status, source_platform, source_url, store_name, price, notes, created_at, updated_at, item_images(image_path,is_primary,sort_order)")
       .order("created_at", { ascending: false })
       .limit(8);
 
@@ -104,6 +108,7 @@ export async function getRecentItems() {
         season: item.season,
         color: item.color,
         styleTags: item.style_tags ?? [],
+        status: item.status ?? "active",
         imageUrl: Array.isArray(item.item_images) ? item.item_images[0]?.image_path : undefined,
         sourcePlatform: item.source_platform,
         sourceUrl: item.source_url ?? "",
@@ -151,4 +156,66 @@ export async function getPossibleDuplicates() {
       reasons: ["同类目", "同颜色", "标题关键词相近"]
     }
   ];
+}
+
+export async function getWardrobeStats() {
+  const supabase = createSupabaseServerClient();
+
+  if (supabase) {
+    const { data } = await supabase.from("items").select("category, color, status");
+
+    if (data) {
+      const categoryCounts = new Map<string, number>();
+      const colorCounts = new Map<string, number>();
+      let idleCount = 0;
+
+      for (const item of data) {
+        categoryCounts.set(item.category, (categoryCounts.get(item.category) ?? 0) + 1);
+        colorCounts.set(item.color, (colorCounts.get(item.color) ?? 0) + 1);
+
+        if (item.status === "idle") {
+          idleCount += 1;
+        }
+      }
+
+      return {
+        totalCount: data.length,
+        idleCount,
+        categoryBreakdown: Array.from(categoryCounts.entries()).map(([label, count]) => ({
+          label,
+          count
+        })),
+        colorBreakdown: Array.from(colorCounts.entries()).map(([label, count]) => ({
+          label,
+          count
+        }))
+      };
+    }
+  }
+
+  const categoryCounts = new Map<string, number>();
+  const colorCounts = new Map<string, number>();
+  let idleCount = 0;
+
+  for (const item of sampleItems) {
+    categoryCounts.set(item.category, (categoryCounts.get(item.category) ?? 0) + 1);
+    colorCounts.set(item.color, (colorCounts.get(item.color) ?? 0) + 1);
+
+    if (item.status === "idle") {
+      idleCount += 1;
+    }
+  }
+
+  return {
+    totalCount: sampleItems.length,
+    idleCount,
+    categoryBreakdown: Array.from(categoryCounts.entries()).map(([label, count]) => ({
+      label,
+      count
+    })),
+    colorBreakdown: Array.from(colorCounts.entries()).map(([label, count]) => ({
+      label,
+      count
+    }))
+  };
 }
