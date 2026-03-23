@@ -9,7 +9,7 @@ describe("SettingsPage", () => {
     expect(screen.getByRole("heading", { name: "我的" })).toBeInTheDocument();
     expect(screen.getByText("衣物总数")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
-    expect(screen.getByText("闲置件数")).toBeInTheDocument();
+    expect(screen.queryByText("闲置件数")).not.toBeInTheDocument();
     expect(screen.getByText("类目分布")).toBeInTheDocument();
     expect(screen.getByText("上装")).toBeInTheDocument();
     expect(screen.getByText("颜色分布")).toBeInTheDocument();

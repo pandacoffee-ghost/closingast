@@ -37,29 +37,22 @@ export default async function SettingsPage() {
         <section
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
             gap: "12px"
           }}
         >
-          {[
-            { label: "衣物总数", value: stats.totalCount },
-            { label: "闲置件数", value: stats.idleCount }
-          ].map((item) => (
-            <article
-              key={item.label}
-              style={{
-                display: "grid",
-                gap: "8px",
-                padding: "18px",
-                borderRadius: "22px",
-                background: "rgba(255, 250, 242, 0.92)",
-                border: "1px solid #eadbc2"
-              }}
-            >
-              <span style={{ color: "#8b7764", fontSize: "14px" }}>{item.label}</span>
-              <strong style={{ fontSize: "34px", lineHeight: 1 }}>{item.value}</strong>
-            </article>
-          ))}
+          <article
+            style={{
+              display: "grid",
+              gap: "8px",
+              padding: "18px",
+              borderRadius: "22px",
+              background: "rgba(255, 250, 242, 0.92)",
+              border: "1px solid #eadbc2"
+            }}
+          >
+            <span style={{ color: "#8b7764", fontSize: "14px" }}>衣物总数</span>
+            <strong style={{ fontSize: "34px", lineHeight: 1 }}>{stats.totalCount}</strong>
+          </article>
         </section>
 
         <section

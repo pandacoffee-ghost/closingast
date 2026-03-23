@@ -162,25 +162,19 @@ export async function getWardrobeStats() {
   const supabase = createSupabaseServerClient();
 
   if (supabase) {
-    const { data } = await supabase.from("items").select("category, color, status");
+    const { data } = await supabase.from("items").select("category, color");
 
     if (data) {
       const categoryCounts = new Map<string, number>();
       const colorCounts = new Map<string, number>();
-      let idleCount = 0;
 
       for (const item of data) {
         categoryCounts.set(item.category, (categoryCounts.get(item.category) ?? 0) + 1);
         colorCounts.set(item.color, (colorCounts.get(item.color) ?? 0) + 1);
-
-        if (item.status === "idle") {
-          idleCount += 1;
-        }
       }
 
       return {
         totalCount: data.length,
-        idleCount,
         categoryBreakdown: Array.from(categoryCounts.entries()).map(([label, count]) => ({
           label,
           count
@@ -195,20 +189,14 @@ export async function getWardrobeStats() {
 
   const categoryCounts = new Map<string, number>();
   const colorCounts = new Map<string, number>();
-  let idleCount = 0;
 
   for (const item of sampleItems) {
     categoryCounts.set(item.category, (categoryCounts.get(item.category) ?? 0) + 1);
     colorCounts.set(item.color, (colorCounts.get(item.color) ?? 0) + 1);
-
-    if (item.status === "idle") {
-      idleCount += 1;
-    }
   }
 
   return {
     totalCount: sampleItems.length,
-    idleCount,
     categoryBreakdown: Array.from(categoryCounts.entries()).map(([label, count]) => ({
       label,
       count
