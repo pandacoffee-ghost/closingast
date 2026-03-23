@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LinkImportPanel } from "./link-import-panel";
 import { ImagePicker } from "./image-picker";
+import { inferFieldsFromTitle } from "@/lib/imports/title-inference";
 
 function detectSourcePlatform(sourceUrl: string) {
   if (sourceUrl.includes("taobao.com")) {
@@ -38,6 +39,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState(initialValues?.title ?? "");
   const [sourceUrl, setSourceUrl] = useState(initialValues?.sourceUrl ?? "");
+  const [category, setCategory] = useState(initialValues?.category ?? "top");
   const [color, setColor] = useState(initialValues?.color ?? "白色");
   const [styleTag, setStyleTag] = useState(initialValues?.styleTags?.[0] ?? "");
   const [notes, setNotes] = useState(initialValues?.notes ?? "");
@@ -88,9 +90,16 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
 
     if (result.mode === "success") {
       setTitle(result.title ?? "");
+      const inferredFields = inferFieldsFromTitle(result.title ?? "");
       setPreviewUrl(result.imageUrl ?? null);
       setImportedStoreName(result.storeName ?? undefined);
       setImportedPrice(result.priceText ?? undefined);
+      if (inferredFields.color) {
+        setColor(inferredFields.color);
+      }
+      if (inferredFields.category) {
+        setCategory(inferredFields.category);
+      }
       setImportSummary(
         [result.platform === "taobao" ? "淘宝" : "京东", result.storeName, result.priceText]
           .filter(Boolean)
@@ -114,7 +123,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
     const sourcePlatform = detectSourcePlatform(normalizedSourceUrl);
     const payload = {
       title: String(formData.get("title") ?? ""),
-      category: String(formData.get("category") ?? initialValues?.category ?? "top"),
+      category: String(formData.get("category") ?? category),
       season: [String(formData.get("season") ?? initialValues?.season?.[0] ?? "spring")],
       color: String(formData.get("color") ?? initialValues?.color ?? "白色"),
       styleTags: normalizedStyleTag ? [normalizedStyleTag] : [],
@@ -168,7 +177,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         类目
-        <select name="category" defaultValue={initialValues?.category ?? "top"}>
+        <select name="category" value={category} onChange={(event) => setCategory(event.target.value)}>
           <option value="top">上装</option>
           <option value="bottom">下装</option>
           <option value="dress">裙子</option>

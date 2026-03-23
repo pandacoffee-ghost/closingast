@@ -26,7 +26,7 @@ describe("ItemFormClient", () => {
         json: async () => ({
           mode: "success",
           platform: "taobao",
-          title: "米白针织开衫",
+          title: "米白针织开衫女春季短款",
           sourceUrl: "https://item.taobao.com/item.htm?id=1",
           imageUrl: "https://img.example.com/cardigan.jpg",
           storeName: "简约衣橱店",
@@ -41,7 +41,10 @@ describe("ItemFormClient", () => {
     await user.click(screen.getByRole("button", { name: "解析链接" }));
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue("米白针织开衫")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("米白针织开衫女春季短款")).toBeInTheDocument();
     });
+
+    expect(screen.getByDisplayValue("米白")).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "类目" })).toHaveValue("top");
   });
 });
