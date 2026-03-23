@@ -1,4 +1,5 @@
 import React from "react";
+import { BottomNav } from "@/components/navigation/bottom-nav";
 import { DuplicateHints } from "@/components/items/duplicate-hints";
 import { getItemById } from "@/lib/items/queries";
 
@@ -13,14 +14,22 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
   const item = await getItemById(id);
 
   return (
-    <main style={{ minHeight: "100dvh", padding: "24px 20px", background: "#f4efe6" }}>
-      <section style={{ display: "grid", gap: "20px", maxWidth: "560px", margin: "0 auto" }}>
+    <main
+      style={{
+        minHeight: "100dvh",
+        display: "grid",
+        gridTemplateRows: "1fr auto",
+        background: "transparent"
+      }}
+    >
+      <section style={{ padding: "28px 20px 40px", display: "grid", gap: "20px", maxWidth: "560px", margin: "0 auto" }}>
         <div
           aria-hidden="true"
           style={{
             aspectRatio: "4 / 5",
             borderRadius: "28px",
-            background: "linear-gradient(180deg, #f2e4d2, #d6bda2)"
+            background: "linear-gradient(180deg, #f2e4d2, #d6bda2)",
+            boxShadow: "0 24px 48px rgba(44, 31, 21, 0.14)"
           }}
         />
 
@@ -32,7 +41,15 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
           </p>
         </header>
 
-        <section style={{ display: "grid", gap: "10px", padding: "18px", borderRadius: "22px", background: "#fffaf2" }}>
+        <section
+          style={{
+            display: "grid",
+            gap: "10px",
+            padding: "18px",
+            borderRadius: "22px",
+            background: "rgba(255, 250, 242, 0.92)"
+          }}
+        >
           <strong>来源</strong>
           <span>{item.sourcePlatform}</span>
           <strong>店铺</strong>
@@ -54,6 +71,8 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
           ]}
         />
       </section>
+
+      <BottomNav />
     </main>
   );
 }

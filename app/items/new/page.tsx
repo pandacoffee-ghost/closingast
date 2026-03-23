@@ -1,4 +1,5 @@
 import React from "react";
+import { BottomNav } from "@/components/navigation/bottom-nav";
 import { DuplicateHints } from "@/components/items/duplicate-hints";
 import { ItemForm } from "@/components/items/item-form";
 import { rankDuplicateHints } from "@/lib/items/duplicate-hints";
@@ -29,8 +30,15 @@ export default async function NewItemPage() {
   );
 
   return (
-    <main style={{ minHeight: "100dvh", padding: "28px 20px 40px", background: "transparent" }}>
-      <section style={{ display: "grid", gap: "18px", maxWidth: "520px", margin: "0 auto" }}>
+    <main
+      style={{
+        minHeight: "100dvh",
+        display: "grid",
+        gridTemplateRows: "1fr auto",
+        background: "transparent"
+      }}
+    >
+      <section style={{ padding: "28px 20px 40px", display: "grid", gap: "18px", maxWidth: "520px", margin: "0 auto" }}>
         <header style={{ display: "grid", gap: "8px" }}>
           <span style={{ color: "#8b7764", letterSpacing: "0.04em" }}>新增衣物</span>
           <h1 style={{ margin: 0, fontSize: "38px", lineHeight: 0.98 }}>录入一件新衣服</h1>
@@ -42,6 +50,8 @@ export default async function NewItemPage() {
         <ItemForm />
         <DuplicateHints hints={duplicateHints} />
       </section>
+
+      <BottomNav />
     </main>
   );
 }
