@@ -52,6 +52,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialValues?.imageUrl ?? null);
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
   const [recognizedFields, setRecognizedFields] = useState<Record<string, boolean>>({});
+  const [conflictedFields, setConflictedFields] = useState<Record<string, boolean>>({});
 
   function markTouched(field: string) {
     setTouchedFields((current) => ({
@@ -64,8 +65,21 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
     }));
   }
 
-  function applyRecognizedValue(field: string, value: string | undefined, apply: (next: string) => void) {
-    if (!value || touchedFields[field]) {
+  function applyRecognizedValue(
+    field: string,
+    value: string | undefined,
+    currentValue: string,
+    apply: (next: string) => void
+  ) {
+    if (!value) {
+      return;
+    }
+
+    if (touchedFields[field]) {
+      setConflictedFields((current) => ({
+        ...current,
+        [field]: value !== currentValue
+      }));
       return;
     }
 
@@ -73,6 +87,10 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
     setRecognizedFields((current) => ({
       ...current,
       [field]: true
+    }));
+    setConflictedFields((current) => ({
+      ...current,
+      [field]: false
     }));
   }
 
@@ -119,12 +137,12 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       }
 
       const result = await response.json();
-      applyRecognizedValue("title", result.title, setTitle);
-      applyRecognizedValue("category", result.category, setCategory);
-      applyRecognizedValue("color", result.color, setColor);
-      applyRecognizedValue("styleTag", result.styleTags?.[0], setStyleTag);
-      applyRecognizedValue("notes", result.description, setNotes);
-      applyRecognizedValue("season", result.seasons?.[0], setSeason);
+      applyRecognizedValue("title", result.title, title, setTitle);
+      applyRecognizedValue("category", result.category, category, setCategory);
+      applyRecognizedValue("color", result.color, color, setColor);
+      applyRecognizedValue("styleTag", result.styleTags?.[0], styleTag, setStyleTag);
+      applyRecognizedValue("notes", result.description, notes, setNotes);
+      applyRecognizedValue("season", result.seasons?.[0], season, setSeason);
       setRecognitionSummary("已识别建议，可继续手动修改");
     } catch {
       setRecognitionSummary("图片识别失败，请手动填写");
@@ -291,6 +309,11 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           }}
           required
         />
+        {conflictedFields.title ? (
+          <span style={{ fontSize: "13px", color: "#8a5a22", fontWeight: 500 }}>
+            有新的识别建议，已保留你的手动填写
+          </span>
+        ) : null}
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
@@ -308,6 +331,11 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           <option value="dress">裙子</option>
           <option value="outerwear">外套</option>
         </select>
+        {conflictedFields.category ? (
+          <span style={{ fontSize: "13px", color: "#8a5a22", fontWeight: 500 }}>
+            有新的识别建议，已保留你的手动填写
+          </span>
+        ) : null}
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
@@ -325,6 +353,11 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           <option value="autumn">秋</option>
           <option value="winter">冬</option>
         </select>
+        {conflictedFields.season ? (
+          <span style={{ fontSize: "13px", color: "#8a5a22", fontWeight: 500 }}>
+            有新的识别建议，已保留你的手动填写
+          </span>
+        ) : null}
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
@@ -339,6 +372,11 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           }}
           required
         />
+        {conflictedFields.color ? (
+          <span style={{ fontSize: "13px", color: "#8a5a22", fontWeight: 500 }}>
+            有新的识别建议，已保留你的手动填写
+          </span>
+        ) : null}
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
@@ -352,6 +390,11 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
             setStyleTag(event.target.value);
           }}
         />
+        {conflictedFields.styleTag ? (
+          <span style={{ fontSize: "13px", color: "#8a5a22", fontWeight: 500 }}>
+            有新的识别建议，已保留你的手动填写
+          </span>
+        ) : null}
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
@@ -366,6 +409,11 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           }}
           rows={4}
         />
+        {conflictedFields.notes ? (
+          <span style={{ fontSize: "13px", color: "#8a5a22", fontWeight: 500 }}>
+            有新的识别建议，已保留你的手动填写
+          </span>
+        ) : null}
       </label>
 
       {error ? (

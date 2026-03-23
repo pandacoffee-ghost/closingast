@@ -105,5 +105,6 @@ describe("ItemFormClient", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("有新的识别建议，已保留你的手动填写")).toBeInTheDocument();
   });
 });
