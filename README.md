@@ -34,7 +34,6 @@
 - `lib/`：数据查询、变更、展示层和 Supabase 接入
 - `supabase/`：本地数据库 migration 和 seed
 - `tests/`：单测与集成测试
-- `docs/`：产品设计与实施文档
 
 ## 环境要求
 
@@ -156,11 +155,6 @@ npm run test:e2e -- tests/e2e/wardrobe.spec.ts
 - 商品链接导入目前只做了平台识别和安全降级
 - 还没有真正抓取淘宝/京东商品图片、价格、标题
 - 当前更适合作为个人衣橱系统使用，而不是完整电商同步系统
-
-## 文档
-
-- 设计文档：`docs/superpowers/specs/2026-03-20-light-wardrobe-design.md`
-- 实施计划：`docs/superpowers/plans/2026-03-20-light-wardrobe-mvp.md`
 
 ## 推荐启动顺序
 
