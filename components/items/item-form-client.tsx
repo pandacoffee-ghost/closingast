@@ -258,6 +258,26 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           {isRecognizingImage ? "图片识别中..." : recognitionSummary}
         </p>
       ) : null}
+      {previewUrl ? (
+        <button
+          type="button"
+          onClick={() => void recognizeImage(previewUrl)}
+          disabled={isRecognizingImage}
+          style={{
+            justifySelf: "start",
+            border: 0,
+            borderRadius: "999px",
+            padding: "10px 14px",
+            background: "#efe3ce",
+            color: "#1d1b19",
+            fontWeight: 700,
+            boxShadow: "0 10px 18px rgba(64, 48, 34, 0.08)",
+            opacity: isRecognizingImage ? 0.7 : 1
+          }}
+        >
+          {isRecognizingImage ? "识别中..." : "重新识别"}
+        </button>
+      ) : null}
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         {renderFieldLabel("标题", "title")}

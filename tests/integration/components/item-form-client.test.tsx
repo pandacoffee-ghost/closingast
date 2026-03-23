@@ -50,10 +50,9 @@ describe("ItemFormClient", () => {
 
   it("prefills form fields from image recognition after upload", async () => {
     const user = userEvent.setup();
-
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           title: "黑色西装外套",
@@ -64,7 +63,19 @@ describe("ItemFormClient", () => {
           description: "适合秋冬通勤穿着"
         })
       })
-    );
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          title: "深灰羊毛外套",
+          category: "outerwear",
+          color: "深灰",
+          seasons: ["winter"],
+          styleTags: ["通勤"],
+          description: "更适合冬季正式场景"
+        })
+      });
+
+    vi.stubGlobal("fetch", fetchMock);
 
     render(<ItemFormClient />);
 
@@ -86,5 +97,13 @@ describe("ItemFormClient", () => {
     await waitFor(() => {
       expect(screen.queryByText("颜色 · AI建议")).not.toBeInTheDocument();
     });
+
+    await user.click(screen.getByRole("button", { name: "重新识别" }));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("深灰羊毛外套")).toBeInTheDocument();
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
