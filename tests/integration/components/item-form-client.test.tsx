@@ -76,7 +76,15 @@ describe("ItemFormClient", () => {
     });
 
     expect(screen.getByDisplayValue("黑色")).toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "类目" })).toHaveValue("outerwear");
+    expect(screen.getByRole("combobox", { name: /类目/ })).toHaveValue("outerwear");
     expect(screen.getByDisplayValue("适合秋冬通勤穿着")).toBeInTheDocument();
+    expect(screen.getAllByText("AI建议").length).toBeGreaterThan(0);
+
+    await user.clear(screen.getByLabelText(/颜色/));
+    await user.type(screen.getByLabelText(/颜色/), "藏青");
+
+    await waitFor(() => {
+      expect(screen.queryByText("颜色 · AI建议")).not.toBeInTheDocument();
+    });
   });
 });

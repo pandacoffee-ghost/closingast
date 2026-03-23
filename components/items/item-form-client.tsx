@@ -51,11 +51,16 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
   const [importedPrice, setImportedPrice] = useState<string | undefined>(undefined);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialValues?.imageUrl ?? null);
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+  const [recognizedFields, setRecognizedFields] = useState<Record<string, boolean>>({});
 
   function markTouched(field: string) {
     setTouchedFields((current) => ({
       ...current,
       [field]: true
+    }));
+    setRecognizedFields((current) => ({
+      ...current,
+      [field]: false
     }));
   }
 
@@ -65,6 +70,34 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
     }
 
     apply(value);
+    setRecognizedFields((current) => ({
+      ...current,
+      [field]: true
+    }));
+  }
+
+  function renderFieldLabel(label: string, field: string) {
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+        <span>{label}</span>
+        {recognizedFields[field] ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              borderRadius: "999px",
+              padding: "2px 8px",
+              background: "#efe3ce",
+              color: "#5d4932",
+              fontSize: "12px",
+              fontWeight: 700
+            }}
+          >
+            AI建议
+          </span>
+        ) : null}
+      </span>
+    );
   }
 
   async function recognizeImage(imageDataUrl: string) {
@@ -227,7 +260,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       ) : null}
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
-        标题
+        {renderFieldLabel("标题", "title")}
         <input
           name="title"
           placeholder="例如：白色衬衫"
@@ -241,7 +274,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
-        类目
+        {renderFieldLabel("类目", "category")}
         <select
           name="category"
           value={category}
@@ -258,7 +291,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
-        季节
+        {renderFieldLabel("季节", "season")}
         <select
           name="season"
           value={season}
@@ -275,7 +308,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
-        颜色
+        {renderFieldLabel("颜色", "color")}
         <input
           name="color"
           placeholder="例如：白色 / 米白 / 卡其"
@@ -289,7 +322,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
-        场景标签
+        {renderFieldLabel("场景标签", "styleTag")}
         <input
           name="styleTag"
           placeholder="例如：通勤 / 休闲 / 约会（可不填）"
@@ -302,7 +335,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
-        备注
+        {renderFieldLabel("备注", "notes")}
         <textarea
           name="notes"
           placeholder="例如：版型偏宽松、适合春秋通勤"
