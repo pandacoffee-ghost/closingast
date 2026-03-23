@@ -9,6 +9,7 @@ describe("ItemDetailPage", () => {
     expect(screen.getByRole("heading", { name: "米白针织开衫" })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "米白针织开衫" })).toBeInTheDocument();
     expect(screen.getByText("来源")).toBeInTheDocument();
-    expect(screen.getByText("淘宝")).toBeInTheDocument();
+    expect(screen.getByText("淘宝商品链接导入")).toBeInTheDocument();
+    expect(screen.queryByText("可能重复")).not.toBeInTheDocument();
   });
 });

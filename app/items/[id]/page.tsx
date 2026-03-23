@@ -1,7 +1,7 @@
 import React from "react";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { DeleteItemButton } from "@/components/items/delete-item-button";
-import { DuplicateHints } from "@/components/items/duplicate-hints";
+import { formatSeasonLabel, getItemSourceDetails } from "@/lib/items/presentation";
 import { getItemById } from "@/lib/items/queries";
 
 type ItemDetailPageProps = {
@@ -13,6 +13,7 @@ type ItemDetailPageProps = {
 export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
   const { id } = await params;
   const item = await getItemById(id);
+  const sourceDetails = getItemSourceDetails(item);
 
   return (
     <main
@@ -52,10 +53,9 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
         )}
 
         <header style={{ display: "grid", gap: "8px" }}>
-          <span style={{ color: "#8b7764" }}>{item.category}</span>
           <h1 style={{ margin: 0 }}>{item.title}</h1>
           <p style={{ margin: 0, color: "#6d6459" }}>
-            {item.color} · {item.season.join(" / ")}
+            {item.color} · {formatSeasonLabel(item.season)}
           </p>
         </header>
 
@@ -69,27 +69,18 @@ export default async function ItemDetailPage({ params }: ItemDetailPageProps) {
           }}
         >
           <strong>来源</strong>
-          <span>{item.sourcePlatform}</span>
-          <strong>店铺</strong>
-          <span>{item.storeName}</span>
-          <strong>价格</strong>
-          <span>{item.price}</span>
+          <span>{sourceDetails.label}</span>
+          {sourceDetails.details.map((detail) => (
+            <React.Fragment key={detail.label}>
+              <strong>{detail.label}</strong>
+              <span>{detail.value}</span>
+            </React.Fragment>
+          ))}
           <strong>备注</strong>
           <span>{item.notes}</span>
         </section>
 
         <DeleteItemButton itemId={item.id} />
-
-        <DuplicateHints
-          hints={[
-            {
-              id: "sample-hint",
-              title: "米白开衫",
-              score: 9,
-              reasons: ["同类目", "同颜色"]
-            }
-          ]}
-        />
       </section>
 
       <BottomNav />

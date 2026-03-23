@@ -17,11 +17,14 @@ export async function createItem(input: ItemInput) {
         color: parsed.color,
         style_tags: parsed.styleTags,
         source_platform: parsed.sourcePlatform,
+        source_url: parsed.sourceUrl || null,
+        store_name: parsed.storeName ?? null,
+        price: parsed.price || null,
         status: parsed.status,
         notes: parsed.notes ?? null
       })
       .select(
-        "id, user_id, title, category, season, color, style_tags, source_platform, notes, status, created_at, updated_at"
+        "id, user_id, title, category, season, color, style_tags, source_platform, source_url, store_name, price, notes, status, created_at, updated_at"
       )
       .single();
 
@@ -52,6 +55,9 @@ export async function createItem(input: ItemInput) {
       styleTags: data.style_tags,
       imageDataUrl: parsed.imageDataUrl,
       sourcePlatform: data.source_platform,
+      sourceUrl: data.source_url ?? undefined,
+      storeName: data.store_name ?? undefined,
+      price: data.price ? String(data.price) : undefined,
       notes: data.notes ?? undefined,
       status: data.status,
       createdAt: data.created_at,

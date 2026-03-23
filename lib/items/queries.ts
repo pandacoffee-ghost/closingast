@@ -13,6 +13,8 @@ type WardrobeItem = {
   storeName: string;
   price: string;
   notes: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 const sampleItems: WardrobeItem[] = [
@@ -25,11 +27,13 @@ const sampleItems: WardrobeItem[] = [
     styleTags: ["通勤"],
     imageUrl:
       "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 400'><rect width='320' height='400' rx='28' fill='%23efe2cf'/><path d='M110 92c18-16 82-16 100 0l38 48-34 30-18-18v154c0 10-8 18-18 18h-36c-10 0-18-8-18-18V152l-18 18-34-30 38-48z' fill='%23d7c2aa'/></svg>",
-    sourcePlatform: "淘宝",
+    sourcePlatform: "taobao",
     sourceUrl: "https://item.taobao.com/item.htm?id=1",
     storeName: "简约衣橱店",
     price: "199",
-    notes: "版型偏宽松"
+    notes: "版型偏宽松",
+    createdAt: "2026-03-20T08:00:00.000Z",
+    updatedAt: "2026-03-20T08:00:00.000Z"
   },
   {
     id: "sample-2",
@@ -39,11 +43,13 @@ const sampleItems: WardrobeItem[] = [
     color: "卡其",
     styleTags: ["通勤"],
     imageUrl: undefined,
-    sourcePlatform: "京东",
+    sourcePlatform: "jd",
     sourceUrl: "https://item.jd.com/1.html",
     storeName: "日常通勤馆",
     price: "299",
-    notes: "适合早春"
+    notes: "适合早春",
+    createdAt: "2026-03-21T08:00:00.000Z",
+    updatedAt: "2026-03-21T08:00:00.000Z"
   }
 ];
 
@@ -53,7 +59,7 @@ export async function getItemById(id: string) {
   if (supabase) {
     const { data } = await supabase
       .from("items")
-      .select("id, title, category, season, color, style_tags, source_platform, source_url, store_name, price, notes, item_images(image_path,is_primary,sort_order)")
+      .select("id, title, category, season, color, style_tags, source_platform, source_url, store_name, price, notes, created_at, updated_at, item_images(image_path,is_primary,sort_order)")
       .eq("id", id)
       .single();
 
@@ -70,7 +76,9 @@ export async function getItemById(id: string) {
         sourceUrl: data.source_url ?? "",
         storeName: data.store_name ?? "",
         price: data.price ? String(data.price) : "",
-        notes: data.notes ?? ""
+        notes: data.notes ?? "",
+        createdAt: data.created_at,
+        updatedAt: data.updated_at
       };
     }
   }
@@ -84,7 +92,7 @@ export async function getRecentItems() {
   if (supabase) {
     const { data } = await supabase
       .from("items")
-      .select("id, title, category, season, color, style_tags, source_platform, source_url, store_name, price, notes, item_images(image_path,is_primary,sort_order)")
+      .select("id, title, category, season, color, style_tags, source_platform, source_url, store_name, price, notes, created_at, updated_at, item_images(image_path,is_primary,sort_order)")
       .order("created_at", { ascending: false })
       .limit(8);
 
@@ -101,7 +109,9 @@ export async function getRecentItems() {
         sourceUrl: item.source_url ?? "",
         storeName: item.store_name ?? "",
         price: item.price ? String(item.price) : "",
-        notes: item.notes ?? ""
+        notes: item.notes ?? "",
+        createdAt: item.created_at,
+        updatedAt: item.updated_at
       }));
     }
   }

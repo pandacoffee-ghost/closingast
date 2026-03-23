@@ -8,6 +8,9 @@ export const itemInputSchema = z.object({
   color: z.string().trim().min(1).max(40),
   styleTags: z.array(z.string().trim().min(1).max(30)).default([]),
   imageDataUrl: z.string().min(1).optional(),
+  sourceUrl: z.string().url().optional().or(z.literal("")),
+  storeName: z.string().trim().max(120).optional(),
+  price: z.string().trim().max(40).optional(),
   notes: z.string().trim().max(300).optional(),
   status: z.enum(itemStatuses).default("active"),
   sourcePlatform: z.enum(sourcePlatforms).default("manual")

@@ -5,6 +5,18 @@ import { useRouter } from "next/navigation";
 import { LinkImportPanel } from "./link-import-panel";
 import { ImagePicker } from "./image-picker";
 
+function detectSourcePlatform(sourceUrl: string) {
+  if (sourceUrl.includes("taobao.com")) {
+    return "taobao";
+  }
+
+  if (sourceUrl.includes("jd.com")) {
+    return "jd";
+  }
+
+  return "manual";
+}
+
 export function ItemFormClient() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +45,8 @@ export function ItemFormClient() {
 
     const formData = new FormData(event.currentTarget);
     const styleTag = String(formData.get("styleTag") ?? "").trim();
+    const sourceUrl = String(formData.get("sourceUrl") ?? "").trim();
+    const sourcePlatform = detectSourcePlatform(sourceUrl);
     const payload = {
       title: String(formData.get("title") ?? ""),
       category: String(formData.get("category") ?? "top"),
@@ -40,6 +54,9 @@ export function ItemFormClient() {
       color: String(formData.get("color") ?? "白色"),
       styleTags: styleTag ? [styleTag] : [],
       imageDataUrl: previewUrl ?? undefined
+      ,
+      sourceUrl,
+      sourcePlatform
     };
 
     const response = await fetch("/api/items", {
