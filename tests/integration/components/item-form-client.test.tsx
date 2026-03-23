@@ -47,4 +47,36 @@ describe("ItemFormClient", () => {
     expect(screen.getByDisplayValue("米白")).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "类目" })).toHaveValue("top");
   });
+
+  it("prefills form fields from image recognition after upload", async () => {
+    const user = userEvent.setup();
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          title: "黑色西装外套",
+          category: "outerwear",
+          color: "黑色",
+          seasons: ["autumn", "winter"],
+          styleTags: ["通勤"],
+          description: "适合秋冬通勤穿着"
+        })
+      })
+    );
+
+    render(<ItemFormClient />);
+
+    const file = new File(["image-binary"], "coat.png", { type: "image/png" });
+    await user.upload(screen.getByLabelText("上传衣服图片"), file);
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("黑色西装外套")).toBeInTheDocument();
+    });
+
+    expect(screen.getByDisplayValue("黑色")).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "类目" })).toHaveValue("outerwear");
+    expect(screen.getByDisplayValue("适合秋冬通勤穿着")).toBeInTheDocument();
+  });
 });

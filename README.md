@@ -4,6 +4,7 @@
 
 - 用图片快速浏览已有衣物
 - 支持手动录入、图片上传、商品链接录入入口
+- 支持图片上传后自动识别并预填标题、颜色、类目、季节、标签、描述
 - 支持标题、颜色、季节、标签、备注搜索
 - 在手机端以最轻的方式管理衣橱
 
@@ -13,6 +14,7 @@
 
 - 衣橱首页：图片流浏览、筛选、搜索
 - 新增衣物：标题、类目、季节、颜色、标签、备注、图片上传、商品链接入口
+- 新增衣物：支持上传图片后自动识别并预填建议值，仍可手动修改后保存
 - 详情页：查看图片、来源、备注，并支持删除
 - 编辑页：支持修改标题、季节、颜色、备注等信息
 - 我的页面：衣物总数、类目分布、颜色分布
@@ -64,12 +66,28 @@ cp .env.example .env.local
 supabase status
 ```
 
-把下面 3 个值填进 `.env.local`：
+把下面 3 个 Supabase 值填进 `.env.local`：
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=你的本地 Publishable Key
 SUPABASE_SERVICE_ROLE_KEY=你的本地 Secret Key
+```
+
+如果你要开启图片识别，再补 3 个视觉模型配置：
+
+```bash
+VISION_API_BASE_URL=你的 OpenAI 兼容模型地址
+VISION_API_KEY=你的模型 API Key
+VISION_MODEL=你的视觉模型名
+```
+
+例如：
+
+```bash
+VISION_API_BASE_URL=https://api.openai.com/v1
+VISION_API_KEY=sk-xxxx
+VISION_MODEL=gpt-4.1-mini
 ```
 
 ## 安装依赖
@@ -152,8 +170,8 @@ npm run test:e2e -- tests/e2e/wardrobe.spec.ts
 
 ## 当前已知边界
 
-- 商品链接导入目前只做了平台识别和安全降级
-- 还没有真正抓取淘宝/京东商品图片、价格、标题
+- 图片识别结果当前只作为建议值，不会自动入库
+- 商品链接导入目前只做了平台识别、公开页面元信息提取和安全降级
 - 当前更适合作为个人衣橱系统使用，而不是完整电商同步系统
 
 ## 推荐启动顺序

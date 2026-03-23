@@ -18,7 +18,9 @@ export function ImagePicker({ previewUrl, onChange }: ImagePickerProps) {
         background: "rgba(255, 250, 242, 0.94)"
       }}
     >
-      <span style={{ fontWeight: 600 }}>上传衣服图片</span>
+      <span id="image-picker-label" style={{ fontWeight: 600 }}>
+        上传衣服图片
+      </span>
       <span style={{ color: "#6d6459", fontSize: "14px" }}>支持拍照或相册选择</span>
       {previewUrl ? (
         <div
@@ -38,7 +40,15 @@ export function ImagePicker({ previewUrl, onChange }: ImagePickerProps) {
           />
         </div>
       ) : null}
-      <input id="images" name="images" type="file" multiple accept="image/*" onChange={onChange} />
+      <input
+        id="images"
+        name="images"
+        type="file"
+        multiple
+        accept="image/*"
+        aria-labelledby="image-picker-label"
+        onChange={onChange}
+      />
     </label>
   );
 }

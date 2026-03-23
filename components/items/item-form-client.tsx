@@ -36,17 +36,69 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isRecognizingImage, setIsRecognizingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState(initialValues?.title ?? "");
   const [sourceUrl, setSourceUrl] = useState(initialValues?.sourceUrl ?? "");
   const [category, setCategory] = useState(initialValues?.category ?? "top");
+  const [season, setSeason] = useState(initialValues?.season?.[0] ?? "spring");
   const [color, setColor] = useState(initialValues?.color ?? "白色");
   const [styleTag, setStyleTag] = useState(initialValues?.styleTags?.[0] ?? "");
   const [notes, setNotes] = useState(initialValues?.notes ?? "");
   const [importSummary, setImportSummary] = useState<string | null>(null);
+  const [recognitionSummary, setRecognitionSummary] = useState<string | null>(null);
   const [importedStoreName, setImportedStoreName] = useState<string | undefined>(undefined);
   const [importedPrice, setImportedPrice] = useState<string | undefined>(undefined);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialValues?.imageUrl ?? null);
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+
+  function markTouched(field: string) {
+    setTouchedFields((current) => ({
+      ...current,
+      [field]: true
+    }));
+  }
+
+  function applyRecognizedValue(field: string, value: string | undefined, apply: (next: string) => void) {
+    if (!value || touchedFields[field]) {
+      return;
+    }
+
+    apply(value);
+  }
+
+  async function recognizeImage(imageDataUrl: string) {
+    setIsRecognizingImage(true);
+    setRecognitionSummary("识别中...");
+
+    try {
+      const response = await fetch("/api/vision/extract-item", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ imageDataUrl })
+      });
+
+      if (!response.ok) {
+        setRecognitionSummary("图片识别失败，请手动填写");
+        return;
+      }
+
+      const result = await response.json();
+      applyRecognizedValue("title", result.title, setTitle);
+      applyRecognizedValue("category", result.category, setCategory);
+      applyRecognizedValue("color", result.color, setColor);
+      applyRecognizedValue("styleTag", result.styleTags?.[0], setStyleTag);
+      applyRecognizedValue("notes", result.description, setNotes);
+      applyRecognizedValue("season", result.seasons?.[0], setSeason);
+      setRecognitionSummary("已识别建议，可继续手动修改");
+    } catch {
+      setRecognitionSummary("图片识别失败，请手动填写");
+    } finally {
+      setIsRecognizingImage(false);
+    }
+  }
 
   async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -58,7 +110,12 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
 
     const reader = new FileReader();
     reader.onload = () => {
-      setPreviewUrl(typeof reader.result === "string" ? reader.result : null);
+      const nextPreviewUrl = typeof reader.result === "string" ? reader.result : null;
+      setPreviewUrl(nextPreviewUrl);
+
+      if (nextPreviewUrl) {
+        void recognizeImage(nextPreviewUrl);
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -163,6 +220,11 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
         importSummary={importSummary}
       />
       <ImagePicker previewUrl={previewUrl} onChange={handleImageChange} />
+      {recognitionSummary ? (
+        <p aria-live="polite" style={{ margin: 0, color: "#6d6459", fontSize: "14px" }}>
+          {isRecognizingImage ? "图片识别中..." : recognitionSummary}
+        </p>
+      ) : null}
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         标题
@@ -170,14 +232,24 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           name="title"
           placeholder="例如：白色衬衫"
           value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          onChange={(event) => {
+            markTouched("title");
+            setTitle(event.target.value);
+          }}
           required
         />
       </label>
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         类目
-        <select name="category" value={category} onChange={(event) => setCategory(event.target.value)}>
+        <select
+          name="category"
+          value={category}
+          onChange={(event) => {
+            markTouched("category");
+            setCategory(event.target.value);
+          }}
+        >
           <option value="top">上装</option>
           <option value="bottom">下装</option>
           <option value="dress">裙子</option>
@@ -187,7 +259,14 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         季节
-        <select name="season" defaultValue={initialValues?.season?.[0] ?? "spring"}>
+        <select
+          name="season"
+          value={season}
+          onChange={(event) => {
+            markTouched("season");
+            setSeason(event.target.value);
+          }}
+        >
           <option value="spring">春</option>
           <option value="summer">夏</option>
           <option value="autumn">秋</option>
@@ -201,7 +280,10 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           name="color"
           placeholder="例如：白色 / 米白 / 卡其"
           value={color}
-          onChange={(event) => setColor(event.target.value)}
+          onChange={(event) => {
+            markTouched("color");
+            setColor(event.target.value);
+          }}
           required
         />
       </label>
@@ -212,7 +294,10 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           name="styleTag"
           placeholder="例如：通勤 / 休闲 / 约会（可不填）"
           value={styleTag}
-          onChange={(event) => setStyleTag(event.target.value)}
+          onChange={(event) => {
+            markTouched("styleTag");
+            setStyleTag(event.target.value);
+          }}
         />
       </label>
 
@@ -222,7 +307,10 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
           name="notes"
           placeholder="例如：版型偏宽松、适合春秋通勤"
           value={notes}
-          onChange={(event) => setNotes(event.target.value)}
+          onChange={(event) => {
+            markTouched("notes");
+            setNotes(event.target.value);
+          }}
           rows={4}
         />
       </label>
