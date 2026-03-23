@@ -9,5 +9,6 @@ describe("WardrobePage", () => {
     expect(screen.getByRole("heading", { name: "衣橱" })).toBeInTheDocument();
     expect(screen.getByPlaceholderText("搜索白色针织 / 卡其风衣")).toBeInTheDocument();
     expect(screen.getByText("米白针织开衫")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "查看 米白针织开衫 详情" })).toBeInTheDocument();
   });
 });

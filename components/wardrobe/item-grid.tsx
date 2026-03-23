@@ -34,6 +34,7 @@ export function ItemGrid({ items }: ItemGridProps) {
       {items.map((item, index) => (
         <ItemCard
           key={item.id}
+          id={item.id}
           title={item.title}
           category={item.category}
           color={item.color}
