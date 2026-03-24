@@ -32,7 +32,7 @@ function extractJsonText(payload: unknown) {
   throw new Error("Vision provider returned an unsupported payload");
 }
 
-function toStringArray(value: unknown) {
+function toStringArray(value: unknown): string[] {
   if (Array.isArray(value)) {
     return value.flatMap((entry) => toStringArray(entry));
   }
