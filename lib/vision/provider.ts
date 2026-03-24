@@ -32,6 +32,31 @@ function extractJsonText(payload: unknown) {
   throw new Error("Vision provider returned an unsupported payload");
 }
 
+function toStringArray(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0);
+  }
+
+  if (typeof value === "string" && value.trim().length > 0) {
+    return [value.trim()];
+  }
+
+  return [];
+}
+
+function normalizeVisionPayload(payload: Record<string, unknown>) {
+  const normalized = { ...payload } as Record<string, unknown>;
+
+  normalized.seasons = toStringArray(payload.seasons);
+  normalized.styleTags = toStringArray(payload.styleTags);
+
+  if (typeof payload.description === "string") {
+    normalized.description = payload.description.slice(0, 300);
+  }
+
+  return normalized;
+}
+
 export async function extractItemFromImage(input: ExtractItemInput): Promise<VisionExtraction> {
   const baseUrl = getRequiredEnv("VISION_API_BASE_URL");
   const apiKey = getRequiredEnv("VISION_API_KEY");
@@ -72,7 +97,7 @@ export async function extractItemFromImage(input: ExtractItemInput): Promise<Vis
 
   const payload = await response.json();
   const content = extractJsonText(payload);
-  const parsed = JSON.parse(content);
+  const parsed = normalizeVisionPayload(JSON.parse(content));
 
   return visionExtractionSchema.parse(parsed);
 }

@@ -54,4 +54,41 @@ describe("extractItemFromImage", () => {
       }
     });
   });
+
+  it("normalizes string fields and trims oversized description", async () => {
+    process.env.VISION_API_BASE_URL = "https://vision.example.com/v1";
+    process.env.VISION_API_KEY = "test-key";
+    process.env.VISION_MODEL = "vision-test";
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  title: "米白针织开衫",
+                  category: "top",
+                  color: "米白",
+                  seasons: "autumn",
+                  styleTags: "通勤",
+                  description: "x".repeat(360)
+                })
+              }
+            }
+          ]
+        })
+      })
+    );
+
+    const result = await extractItemFromImage({
+      imageDataUrl: "data:image/png;base64,abc"
+    });
+
+    expect(result.seasons).toEqual(["autumn"]);
+    expect(result.styleTags).toEqual(["通勤"]);
+    expect(result.description?.length).toBe(300);
+  });
 });
