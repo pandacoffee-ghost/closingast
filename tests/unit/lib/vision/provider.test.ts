@@ -53,6 +53,9 @@ describe("extractItemFromImage", () => {
         enable_thinking: false
       }
     });
+    expect(JSON.parse(String(vi.mocked(fetch).mock.calls[0]?.[1]?.body)).messages[0].content[0].text).toContain(
+      "所有可读字段必须使用中文"
+    );
   });
 
   it("normalizes string fields and trims oversized description", async () => {
