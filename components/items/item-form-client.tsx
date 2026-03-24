@@ -32,6 +32,21 @@ type ItemFormClientProps = {
   };
 };
 
+const seasonOptions = [
+  { value: "spring", label: "春" },
+  { value: "summer", label: "夏" },
+  { value: "autumn", label: "秋" },
+  { value: "winter", label: "冬" }
+] as const;
+
+function arraysEqual(left: string[], right: string[]) {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  return [...left].sort().every((entry, index) => entry === [...right].sort()[index]);
+}
+
 export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,7 +56,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
   const [title, setTitle] = useState(initialValues?.title ?? "");
   const [sourceUrl, setSourceUrl] = useState(initialValues?.sourceUrl ?? "");
   const [category, setCategory] = useState(initialValues?.category ?? "top");
-  const [season, setSeason] = useState(initialValues?.season?.[0] ?? "spring");
+  const [seasonSelections, setSeasonSelections] = useState<string[]>(initialValues?.season ?? ["spring"]);
   const [color, setColor] = useState(initialValues?.color ?? "白色");
   const [styleTag, setStyleTag] = useState(initialValues?.styleTags?.[0] ?? "");
   const [notes, setNotes] = useState(initialValues?.notes ?? "");
@@ -91,6 +106,30 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
     setConflictedFields((current) => ({
       ...current,
       [field]: false
+    }));
+  }
+
+  function applyRecognizedSeasons(nextSeasons: string[] | undefined) {
+    if (!nextSeasons || nextSeasons.length === 0) {
+      return;
+    }
+
+    if (touchedFields.season) {
+      setConflictedFields((current) => ({
+        ...current,
+        season: !arraysEqual(nextSeasons, seasonSelections)
+      }));
+      return;
+    }
+
+    setSeasonSelections(nextSeasons);
+    setRecognizedFields((current) => ({
+      ...current,
+      season: true
+    }));
+    setConflictedFields((current) => ({
+      ...current,
+      season: false
     }));
   }
 
@@ -145,7 +184,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       applyRecognizedValue("color", result.color, color, setColor);
       applyRecognizedValue("styleTag", result.styleTags?.[0], styleTag, setStyleTag);
       applyRecognizedValue("notes", result.description, notes, setNotes);
-      applyRecognizedValue("season", result.seasons?.[0], season, setSeason);
+      applyRecognizedSeasons(result.seasons);
       setRecognitionSummary("已识别建议，可继续手动修改");
     } catch {
       setRecognitionSummary("图片识别失败，请手动填写");
@@ -235,7 +274,7 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
     const payload = {
       title: String(formData.get("title") ?? ""),
       category: String(formData.get("category") ?? category),
-      season: [String(formData.get("season") ?? initialValues?.season?.[0] ?? "spring")],
+      season: seasonSelections,
       color: String(formData.get("color") ?? initialValues?.color ?? "白色"),
       styleTags: normalizedStyleTag ? [normalizedStyleTag] : [],
       imageDataUrl: previewUrl ?? undefined,
@@ -343,19 +382,38 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
 
       <label style={{ display: "grid", gap: "8px", fontWeight: 600 }}>
         {renderFieldLabel("季节", "season")}
-        <select
-          name="season"
-          value={season}
-          onChange={(event) => {
-            markTouched("season");
-            setSeason(event.target.value);
-          }}
-        >
-          <option value="spring">春</option>
-          <option value="summer">夏</option>
-          <option value="autumn">秋</option>
-          <option value="winter">冬</option>
-        </select>
+        <div style={{ display: "grid", gap: "8px", gridTemplateColumns: "repeat(2, minmax(0, 1fr))" }}>
+          {seasonOptions.map((option) => (
+            <label
+              key={option.value}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 12px",
+                borderRadius: "14px",
+                background: "#fffaf2",
+                border: "1px solid rgba(64, 48, 34, 0.12)"
+              }}
+            >
+              <input
+                type="checkbox"
+                name="season"
+                value={option.value}
+                checked={seasonSelections.includes(option.value)}
+                onChange={(event) => {
+                  markTouched("season");
+                  setSeasonSelections((current) =>
+                    event.target.checked
+                      ? [...new Set([...current, option.value])]
+                      : current.filter((entry) => entry !== option.value)
+                  );
+                }}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
         {conflictedFields.season ? (
           <span style={{ fontSize: "13px", color: "#8a5a22", fontWeight: 500 }}>
             有新的识别建议，已保留你的手动填写

@@ -89,6 +89,8 @@ describe("ItemFormClient", () => {
     expect(screen.getByDisplayValue("黑色")).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: /类目/ })).toHaveValue("outerwear");
     expect(screen.getByDisplayValue("适合秋冬通勤穿着")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "秋" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "冬" })).toBeChecked();
     expect(screen.getAllByText("AI建议").length).toBeGreaterThan(0);
 
     await user.clear(screen.getByLabelText(/颜色/));
