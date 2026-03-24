@@ -34,11 +34,14 @@ function extractJsonText(payload: unknown) {
 
 function toStringArray(value: unknown) {
   if (Array.isArray(value)) {
-    return value.filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0);
+    return value.flatMap((entry) => toStringArray(entry));
   }
 
   if (typeof value === "string" && value.trim().length > 0) {
-    return [value.trim()];
+    return value
+      .split(/[,，/、]/)
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0);
   }
 
   return [];
