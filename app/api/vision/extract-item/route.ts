@@ -19,6 +19,19 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await extractItemFromImage(parsed.data);
-  return Response.json(result, { status: 200 });
+  try {
+    const result = await extractItemFromImage(parsed.data);
+    return Response.json(result, { status: 200 });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "Unknown vision extraction error";
+    console.error("[vision-extract-item]", reason, error);
+
+    return Response.json(
+      {
+        error: "Vision extraction failed",
+        reason
+      },
+      { status: 502 }
+    );
+  }
 }

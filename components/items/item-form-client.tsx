@@ -132,7 +132,10 @@ export function ItemFormClient({ itemId, initialValues }: ItemFormClientProps) {
       });
 
       if (!response.ok) {
-        setRecognitionSummary("图片识别失败，请手动填写");
+        const failedPayload = await response.json().catch(() => null);
+        setRecognitionSummary(
+          failedPayload?.reason ? `图片识别失败：${failedPayload.reason}` : "图片识别失败，请手动填写"
+        );
         return;
       }
 
