@@ -45,6 +45,9 @@ export async function extractItemFromImage(input: ExtractItemInput): Promise<Vis
     },
     body: JSON.stringify({
       model,
+      chat_template_kwargs: {
+        enable_thinking: false
+      },
       response_format: { type: "json_object" },
       messages: [
         {

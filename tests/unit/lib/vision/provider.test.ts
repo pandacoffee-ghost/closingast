@@ -45,5 +45,13 @@ describe("extractItemFromImage", () => {
     expect(result.category).toBe("top");
     expect(result.color).toBe("米白");
     expect(result.seasons).toEqual(["spring", "autumn"]);
+    expect(vi.mocked(fetch).mock.calls[0]?.[1]).toMatchObject({
+      method: "POST"
+    });
+    expect(JSON.parse(String(vi.mocked(fetch).mock.calls[0]?.[1]?.body))).toMatchObject({
+      chat_template_kwargs: {
+        enable_thinking: false
+      }
+    });
   });
 });
